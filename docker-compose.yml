@@ -3,7 +3,7 @@ services:
   loki:
     extends:
       file: ../compose-security-baseline/hardening.yml
-      service: hardened-xlarge
+      service: hardened-large
     image: grafana/loki:latest
     cpu_shares: 128
     volumes:
