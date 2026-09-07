@@ -40,6 +40,7 @@ services:
       - ./grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
       - ./grafana/dashboards/provider.yaml:/etc/grafana/provisioning/dashboards/provider.yaml:ro
       - ../crabberbot/grafana-dashboard.json:/var/lib/grafana/dashboards/crabberbot.json:ro
+      - ../barbero-scripts/grafana-dashboard.json:/var/lib/grafana/dashboards/barbero.json:ro
       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
     environment:
       - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET__FILE=/run/secrets/oidc_client_secret

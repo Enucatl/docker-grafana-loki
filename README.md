@@ -34,7 +34,7 @@ Grafana will be available at `https://grafana.<DOCKER_DOMAIN>` and Loki at `http
 
 ## Dashboards
 
-Grafana dashboards are provisioned automatically via the `/etc/grafana/provisioning/dashboards/provider.yaml` configuration. External dashboards can be mounted by adding volume entries in the `docker-compose.yml` file. For example, the **crabberbot** dashboard is mounted from `../crabberbot/grafana-dashboard.json` and will be available in Grafana after startup.
+Grafana dashboards are provisioned automatically via the `/etc/grafana/provisioning/dashboards/provider.yaml` configuration. External dashboards can be mounted by adding volume entries in the `docker-compose.yml` file. The **crabberbot** dashboard is mounted from `../crabberbot/grafana-dashboard.json`, and the **barbero** Caddy/Loki dashboard from `../barbero-scripts/grafana-dashboard.json`.
 
 To add additional dashboards:
 1. Mount the dashboard JSON file as a volume in the `grafana` service
