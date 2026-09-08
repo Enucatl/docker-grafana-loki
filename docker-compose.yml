@@ -15,6 +15,12 @@ services:
       - 3100
     restart: unless-stopped
     command: -config.file=/etc/loki/loki-config.yml
+    healthcheck:
+      test: ["CMD", "/usr/bin/loki", "-health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     networks:
       - traefik_proxy
     labels:
@@ -48,6 +54,12 @@ services:
     expose:
       - 3000
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     networks:
       - traefik_proxy
       - crabberbot_backend
