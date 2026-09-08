@@ -18,7 +18,6 @@ services:
     networks:
       - traefik_proxy
     labels:
-      - 'checkmk_monitor=true'
       - 'traefik.enable=true'
       - 'traefik.http.routers.loki.rule=Host(`loki.${DOCKER_DOMAIN}`)'
       - 'traefik.http.routers.loki.entrypoints=https'
@@ -53,7 +52,6 @@ services:
       - traefik_proxy
       - crabberbot_backend
     labels:
-      - 'checkmk_monitor=true'
       - 'traefik.enable=true'
       - 'traefik.docker.network=traefik_proxy'
       - 'traefik.http.routers.grafana.rule=Host(`grafana.${DOCKER_DOMAIN}`)'
