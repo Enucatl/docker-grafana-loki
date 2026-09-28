@@ -22,14 +22,18 @@ services:
       retries: 3
       start_period: 30s
     networks:
-      - traefik_proxy
+      - loki_proxy
     labels:
       - 'traefik.enable=true'
-      - 'traefik.http.routers.loki.rule=Host(`loki.${DOCKER_DOMAIN}`)'
-      - 'traefik.http.routers.loki.entrypoints=https'
-      - 'traefik.http.routers.loki.tls=true'
-      - "traefik.http.routers.loki.middlewares=https-redirectscheme@file"
-      - "traefik.http.routers.loki.service=loki"
+      - 'traefik.http.routers.loki-push.rule=Host(`loki.${DOCKER_DOMAIN}`) && Method(`POST`) && Path(`/loki/api/v1/push`)'
+      - 'traefik.http.routers.loki-push.entrypoints=https'
+      - 'traefik.http.routers.loki-push.tls=true'
+      - 'traefik.http.routers.loki-push.service=loki'
+      - 'traefik.http.routers.loki-read.rule=Host(`loki-read.${DOCKER_DOMAIN}`) && Method(`GET`) && (Path(`/loki/api/v1/query`) || Path(`/loki/api/v1/query_range`) || Path(`/loki/api/v1/labels`) || Path(`/loki/api/v1/series`) || PathRegexp(`^/loki/api/v1/label/[^/]+/values$`))'
+      - 'traefik.http.routers.loki-read.entrypoints=https'
+      - 'traefik.http.routers.loki-read.tls=true'
+      - 'traefik.http.routers.loki-read.tls.options=mtls@file'
+      - 'traefik.http.routers.loki-read.service=loki'
       - "traefik.http.services.loki.loadbalancer.server.port=3100"
 
   grafana:
@@ -63,6 +67,7 @@ services:
     networks:
       - traefik_proxy
       - crabberbot_backend
+      - loki_proxy
     labels:
       - 'traefik.enable=true'
       - 'traefik.docker.network=traefik_proxy'
@@ -82,6 +87,8 @@ volumes:
 
 networks:
   traefik_proxy:
+    external: true
+  loki_proxy:
     external: true
   crabberbot_backend:
     external: true
