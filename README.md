@@ -14,9 +14,9 @@ Both services are fronted by **Traefik** (external network) with TLS termination
 | Setting | Value |
 |---|---|
 | Loki schema | TSDB v13 (from 2025-12-01) |
-| Log retention | 2 months |
-| Ingestion rate | 100 MB/s (burst 200 MB/s) |
-| gRPC max message size | 100 MB |
+| Log retention | 40 days |
+| Ingestion rate | 4 MB/s (burst 8 MB) |
+| gRPC max message size | 16 MB |
 | Structured metadata | enabled |
 | Analytics reporting | disabled |
 
