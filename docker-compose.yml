@@ -27,10 +27,12 @@ services:
       - 'traefik.enable=true'
       - 'traefik.http.routers.loki-push.rule=Host(`loki.${DOCKER_DOMAIN}`) && Method(`POST`) && Path(`/loki/api/v1/push`)'
       - 'traefik.http.routers.loki-push.entrypoints=https'
+      - 'traefik.http.routers.loki-push.middlewares=public-rate-limit@file'
       - 'traefik.http.routers.loki-push.tls=true'
       - 'traefik.http.routers.loki-push.service=loki'
       - 'traefik.http.routers.loki-read.rule=Host(`loki-read.${DOCKER_DOMAIN}`) && Method(`GET`) && (Path(`/loki/api/v1/query`) || Path(`/loki/api/v1/query_range`) || Path(`/loki/api/v1/labels`) || Path(`/loki/api/v1/series`) || PathRegexp(`^/loki/api/v1/label/[^/]+/values$`))'
       - 'traefik.http.routers.loki-read.entrypoints=https'
+      - 'traefik.http.routers.loki-read.middlewares=public-rate-limit@file'
       - 'traefik.http.routers.loki-read.tls=true'
       - 'traefik.http.routers.loki-read.tls.options=mtls@file'
       - 'traefik.http.routers.loki-read.service=loki'
@@ -50,6 +52,8 @@ services:
       - ./grafana/dashboards/provider.yaml:/etc/grafana/provisioning/dashboards/provider.yaml:ro
       - ../crabberbot/grafana-dashboard.json:/var/lib/grafana/dashboards/crabberbot.json:ro
       - ../barbero-scripts/grafana-dashboard.json:/var/lib/grafana/dashboards/barbero.json:ro
+      - ../ais/grafana-dashboard.json:/var/lib/grafana/dashboards/ais.json:ro
+      - ../ais/secrets/grafana-datasource.yaml:/etc/grafana/provisioning/datasources/ais.yaml:ro
       - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
     environment:
       - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET__FILE=/run/secrets/oidc_client_secret
@@ -67,6 +71,7 @@ services:
     networks:
       - traefik_proxy
       - crabberbot_backend
+      - ais_grafana
       - loki_proxy
     labels:
       - 'traefik.enable=true'
@@ -91,6 +96,8 @@ networks:
   loki_proxy:
     external: true
   crabberbot_backend:
+    external: true
+  ais_grafana:
     external: true
 
 secrets:
