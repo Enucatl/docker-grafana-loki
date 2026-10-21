@@ -13,6 +13,8 @@ services:
       - /tmp:rw,noexec,nosuid,size=64m
     expose:
       - 3100
+    ports:
+      - "127.0.0.1:3100:3100"
     restart: unless-stopped
     command: -config.file=/etc/loki/loki-config.yml
     healthcheck:
@@ -42,7 +44,8 @@ services:
     extends:
       file: ../compose-security-baseline/hardening.yml
       service: hardened-medium
-    image: grafana/grafana:latest
+    # Native ML-DSA OIDC and the migrated database require this build.
+    image: grafana/grafana-image-tags:13.3.0-39395647570-amd64
     cpu_shares: 128
     volumes:
       - grafana_data:/var/lib/grafana
