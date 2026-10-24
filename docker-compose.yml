@@ -24,9 +24,10 @@ services:
       retries: 3
       start_period: 30s
     networks:
-      - loki_proxy
+      - grafana-loki_traefik
     labels:
       - 'traefik.enable=true'
+      - 'traefik.docker.network=grafana-loki_traefik'
       - 'traefik.http.routers.loki-push.rule=Host(`loki.${DOCKER_DOMAIN}`) && Method(`POST`) && Path(`/loki/api/v1/push`)'
       - 'traefik.http.routers.loki-push.entrypoints=https'
       - 'traefik.http.routers.loki-push.middlewares=public-rate-limit@file'
@@ -72,13 +73,12 @@ services:
       retries: 3
       start_period: 30s
     networks:
-      - traefik_proxy
+      - grafana-loki_traefik
       - crabberbot_backend
       - ais_grafana
-      - loki_proxy
     labels:
       - 'traefik.enable=true'
-      - 'traefik.docker.network=traefik_proxy'
+      - 'traefik.docker.network=grafana-loki_traefik'
       - 'traefik.http.routers.grafana.rule=Host(`grafana.${DOCKER_DOMAIN}`)'
       - 'traefik.http.routers.grafana.entrypoints=https'
       - 'traefik.http.routers.grafana.tls=true'
@@ -94,10 +94,9 @@ volumes:
   loki_data:
 
 networks:
-  traefik_proxy:
-    external: true
-  loki_proxy:
-    external: true
+  grafana-loki_traefik:
+    name: grafana-loki_traefik
+    enable_ipv6: true
   crabberbot_backend:
     external: true
   ais_grafana:
